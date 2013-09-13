@@ -50,6 +50,7 @@ class horizon(
   $root_url      = $::horizon::params::root_url
   $wsgi_user     = $::horizon::params::apache_user
   $wsgi_group    = $::horizon::params::apache_group
+  $package_theme = openstack-dashboard-nfscloud-theme
 
   package { ["$::horizon::params::http_service", "$::horizon::params::http_modwsgi"]:
     ensure => present,
@@ -61,6 +62,11 @@ class horizon(
     require => Package[$::horizon::params::http_service],
   }
 
+  package { "$package_theme":
+    ensure  => $package_ensure,
+    require => $::horizon::params::package_name,
+  }
+  
   define horizon_safe_package(){
     if ! defined(Package[$name]){
       @package { $name : }
